@@ -14,6 +14,7 @@ import doggytalents.entity.EntityDog;
 import doggytalents.entity.ModeUtil.EnumMode;
 import doggytalents.helper.LogHelper;
 import doggytalents.network.PacketDispatcher;
+import doggytalents.network.packet.client.DogFriendlyFireMessage;
 import doggytalents.network.packet.client.DogModeMessage;
 import doggytalents.network.packet.client.DogNameMessage;
 import doggytalents.network.packet.client.DogObeyMessage;
@@ -60,7 +61,7 @@ public class GuiDogInfo extends GuiScreen {
 		this.doggyTex = this.dog.getTameSkin();
 		int topX = this.width / 2;
 	    int topY = this.height / 2;
-		GuiTextField nameTextField = new GuiTextField(0, this.fontRendererObj, topX - 100, topY + 50, 200, 20) {
+		GuiTextField nameTextField = new GuiTextField(0, this.fontRenderer, topX - 100, topY + 50, 200, 20) {
 			@Override
 			public boolean textboxKeyTyped(char character, int keyId) {
 				boolean typed = super.textboxKeyTyped(character, keyId);
@@ -71,7 +72,7 @@ public class GuiDogInfo extends GuiScreen {
 		};
 		nameTextField.setFocused(false);
 		nameTextField.setMaxStringLength(32);
-		nameTextField.setText(this.dog.getDogName());
+		nameTextField.setText(this.dog.getCustomNameTag());
 		this.nameTextField = nameTextField;
 		
 		this.textfieldList.add(nameTextField);
@@ -110,6 +111,8 @@ public class GuiDogInfo extends GuiScreen {
         	this.buttonList.add(new GuiButton(-5, this.width - 64, topY + 65, 42, 20, String.valueOf(this.dog.willObeyOthers())));
         }
         
+        this.buttonList.add(new GuiButton(-7, this.width - 64, topY - 5, 42, 20, String.valueOf(this.dog.canFriendlyFire())));
+        
         this.buttonList.add(new GuiButton(-6, topX + 40, topY + 25, 60, 20, this.dog.mode.getMode().modeName()));
 	}
 	
@@ -119,19 +122,21 @@ public class GuiDogInfo extends GuiScreen {
 		//Background
 		int topX = this.width / 2;
 		int topY = this.height / 2;
-		this.fontRendererObj.drawString("New name:", topX - 100, topY + 38, 4210752);
-		this.fontRendererObj.drawString("Level: " + this.dog.levels.getLevel(), topX - 65, topY + 75, 0xFF10F9);
-		this.fontRendererObj.drawString("Dire Level: " + this.dog.levels.getDireLevel(), topX, topY + 75, 0xFF10F9);
-		this.fontRendererObj.drawString("Points Left: " + this.dog.spendablePoints(), topX - 38, topY + 89, 0xFFFFFF);
+		this.fontRenderer.drawString("New name:", topX - 100, topY + 38, 4210752);
+		this.fontRenderer.drawString("Level: " + this.dog.levels.getLevel(), topX - 65, topY + 75, 0xFF10F9);
+		this.fontRenderer.drawString("Dire Level: " + this.dog.levels.getDireLevel(), topX, topY + 75, 0xFF10F9);
+		this.fontRenderer.drawString("Points Left: " + this.dog.spendablePoints(), topX - 38, topY + 89, 0xFFFFFF);
 				
-		this.fontRendererObj.drawString("Texture Index", this.width - 80, topY + 20, 0xFFFFFF);
+		this.fontRenderer.drawString("Texture Index", this.width - 80, topY + 20, 0xFFFFFF);
 	    if(this.dog.isOwner(this.player))
-	    	this.fontRendererObj.drawString("Obey Others?", this.width - 76, topY + 55, 0xFFFFFF);
+	    	this.fontRenderer.drawString("Obey Others?", this.width - 76, topY + 55, 0xFFFFFF);
 				
+	    this.fontRenderer.drawString("Friendly Fire?", this.width - 76, topY - 15, 0xFFFFFF);
+	    
 		for(int i = 0; i < this.btnPerPages; ++i) {
 			if((this.currentPage * this.btnPerPages + i) >= TalentRegistry.getTalents().size())
 		    	continue;
-		    this.fontRendererObj.drawString(TalentRegistry.getTalent(this.currentPage * this.btnPerPages + i).getLocalisedName(), 50, 17 + i * 21, 0xFFFFFF);
+		    this.fontRenderer.drawString(TalentRegistry.getTalent(this.currentPage * this.btnPerPages + i).getLocalisedName(), 50, 17 + i * 21, 0xFFFFFF);
 		}
 				
 		for(GuiTextField field : this.textfieldList)
@@ -158,7 +163,7 @@ public class GuiDogInfo extends GuiScreen {
 			    	list.add(TextFormatting.GREEN + talent.getLocalisedName());
 			    	list.add("Level: " + this.dog.talents.getLevel(talent));
 			    	list.add(TextFormatting.GRAY + "--------------------------------");
-		    		list.addAll(this.splitInto(talent.getLocalisedInfo(), 200, this.mc.fontRendererObj));
+		    		list.addAll(this.splitInto(talent.getLocalisedInfo(), 200, this.mc.fontRenderer));
 	    		}
 	    		else if(button.id == -1) {
 	    			list.add(TextFormatting.ITALIC + "Previous Page");
@@ -167,11 +172,15 @@ public class GuiDogInfo extends GuiScreen {
 	    			list.add(TextFormatting.ITALIC + "Next Page");
 	    		}
 	    		else if(button.id == -6) {
-    				String str = I18n.translateToLocal("doggui.modeinfo." + button.displayString.toLowerCase());
-    				list.addAll(splitInto(str, 150, this.mc.fontRendererObj));
+	    			String str = I18n.translateToLocal("doggui.modeinfo." + TextFormatting.getTextWithoutFormattingCodes(button.displayString).toLowerCase());
+    				list.addAll(splitInto(str, 150, this.mc.fontRenderer));
+    				if(!this.dog.coords.hasBowlPos())
+						list.add(TextFormatting.RED + "No food bowl currently set.");
+					else 
+						list.add(TextFormatting.GREEN + "Bowl distance: " + (int)Math.sqrt(this.dog.getPosition().distanceSq(this.dog.coords.getBowlPos())));
     			}
 	    		
-	    		this.drawHoveringText(list, xMouse, yMouse, this.mc.fontRendererObj);
+	    		this.drawHoveringText(list, xMouse, yMouse, this.mc.fontRenderer);
 	    	}
 	    }
 		GL11.glPopMatrix();
@@ -223,22 +232,23 @@ public class GuiDogInfo extends GuiScreen {
             PacketDispatcher.sendToServer(new DogTextureMessage(this.dog.getEntityId(), this.doggyTex));
         }
         
-        if (button.id == -5) {
-        	if(!this.dog.willObeyOthers()) {
-        		button.displayString = "true";
-        		PacketDispatcher.sendToServer(new DogObeyMessage(this.dog.getEntityId(), true));
-        		
-        	}
-        	else {
-        		button.displayString = "false";
-        		PacketDispatcher.sendToServer(new DogObeyMessage(this.dog.getEntityId(), false));
-        	}
+        if(button.id == -5) {
+        	button.displayString = String.valueOf(!this.dog.willObeyOthers());
+        	PacketDispatcher.sendToServer(new DogObeyMessage(this.dog.getEntityId(), !this.dog.willObeyOthers()));
+        }
+        
+        if(button.id == -7) {
+        	button.displayString = String.valueOf(!this.dog.canFriendlyFire());
+        	PacketDispatcher.sendToServer(new DogFriendlyFireMessage(this.dog.getEntityId(), !this.dog.canFriendlyFire()));
         }
         
         if (button.id == -6) {
         	int newMode = (dog.mode.getMode().ordinal() + 1) % EnumMode.values().length;
         	EnumMode mode = EnumMode.values()[newMode];
-        	button.displayString = mode.modeName();
+        	if(mode == EnumMode.WANDERING && !this.dog.coords.hasBowlPos())
+        		button.displayString = TextFormatting.RED + mode.modeName();
+        	else
+        		button.displayString = mode.modeName();
         	PacketDispatcher.sendToServer(new DogModeMessage(this.dog.getEntityId(), newMode));
         }
 	}

@@ -2,6 +2,7 @@ package doggytalents.client.renderer.entity;
 
 import org.lwjgl.opengl.GL11;
 
+import doggytalents.client.model.ModelDog;
 import doggytalents.entity.EntityDog;
 import doggytalents.lib.ResourceReference;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -28,10 +29,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderDog extends RenderLiving<EntityDog> {
 	
-    public RenderDog(RenderManager renderManager, ModelBase model, float shadowSize) {
-        super(renderManager, model, shadowSize);
+    public RenderDog(RenderManager renderManagerIn) {
+        super(renderManagerIn, new ModelDog(), 0.5F);
         this.addLayer(new LayerRadioCollar(this));
         this.addLayer(new LayerDogHurt(this));
+        this.addLayer(new LayerBone(this));
     }
 
     @Override
@@ -50,20 +52,7 @@ public class RenderDog extends RenderLiving<EntityDog> {
             super.renderLivingAt(p_77039_1_, p_77039_2_, p_77039_4_, p_77039_6_);
         }
     }
-
-    @Override
-    protected void rotateCorpse(EntityDog dog, float p_77043_2_, float p_77043_3_, float partialTicks)
-    {
-        if (dog.isEntityAlive() && dog.isPlayerSleeping())
-        {
-           // GlStateManager.rotate(bat.getBedOrientationInDegrees(), 0.0F, 1.0F, 0.0F);
-            GlStateManager.rotate(this.getDeathMaxRotation(dog), 0.0F, 0.0F, 1.0F);
-            GlStateManager.rotate(270.0F, 0.0F, 1.0F, 0.0F);
-        }
-        else
-            super.rotateCorpse(dog, p_77043_2_, p_77043_3_, partialTicks);
-    }
-
+    
     @Override
     public void doRender(EntityDog dog, double x, double y, double z, float entityYaw, float partialTicks) {
     	
@@ -80,13 +69,6 @@ public class RenderDog extends RenderLiving<EntityDog> {
 			return ResourceReference.getTameSkin(dog.getTameSkin());
     	
         return ResourceReference.doggyWild;
-    }
-    
-    @Override
-	public void renderName(EntityDog dog, double x, double y, double z) {
-        
-        if(!dog.getDogName().isEmpty())
-        	super.renderName(dog, x, y, z);
     }
     
     @Override
@@ -114,8 +96,10 @@ public class RenderDog extends RenderLiving<EntityDog> {
 	    			EntityLivingBase owner = dog.getOwner();
 	    			if(owner != null)
 	    				this.renderLabelWithScale(this.getFontRendererFromRenderManager(), owner.getDisplayName().getUnformattedText(), (float)x, (float)y + f2 - 0.34F, (float)z, 0, f, f1, flag1, flag, 0.01F);
-	    			else
+	    			else if(dog.getOwnerId() != null)
 	          		   	this.renderLabelWithScale(this.getFontRendererFromRenderManager(), dog.getOwnerId().toString(), (float)x, (float)y + f2 - 0.34F, (float)z, 0, f, f1, flag1, flag, 0.01F);
+	    			else
+	    				this.renderLabelWithScale(this.getFontRendererFromRenderManager(), "A Wild Dog", (float)x, (float)y + f2 - 0.34F, (float)z, 0, f, f1, flag1, flag, 0.01F);
 	             }
     		}
     	}

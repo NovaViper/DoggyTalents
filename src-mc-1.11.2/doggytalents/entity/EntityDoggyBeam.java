@@ -3,16 +3,12 @@ package doggytalents.entity;
 import java.util.List;
 
 import doggytalents.entity.ModeUtil.EnumMode;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
@@ -43,8 +39,7 @@ public class EntityDoggyBeam extends EntityThrowable {
     @Override
     protected void onImpact(RayTraceResult result)
     {
-        if (result.entityHit != null)
-        {
+        if(result.entityHit instanceof EntityLivingBase) {
         	 byte var2 = 0;
              
              List nearEnts = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(100D, 10D, 100D));

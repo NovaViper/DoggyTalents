@@ -11,9 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -46,7 +44,7 @@ public class CommandMessage extends AbstractServerMessage {
 	public void process(EntityPlayer player, Side side) {
 		World world = player.world;
 
-		if((player.getHeldItemMainhand().getItem() == ModItems.commandEmblem || player.getHeldItemOffhand().getItem() == ModItems.commandEmblem)) {
+		if((player.getHeldItemMainhand().getItem() == ModItems.COMMAND_EMBLEM || player.getHeldItemOffhand().getItem() == ModItems.COMMAND_EMBLEM)) {
 
 			FMLLog.info(this.commandId + " id");
 			if(this.commandId == 1)

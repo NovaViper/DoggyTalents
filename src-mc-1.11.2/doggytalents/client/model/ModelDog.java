@@ -1,7 +1,5 @@
 package doggytalents.client.model;
 
-import org.lwjgl.opengl.GL11;
-
 import doggytalents.entity.EntityDog;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -179,6 +177,7 @@ public class ModelDog extends ModelBase {
         }
 
         this.wolfHeadMain.rotateAngleZ = dog.getInterestedAngle(partialTickTime) + dog.getShakeAngle(partialTickTime, 0.0F);
+        this.wolfHeadMainBone.rotateAngleZ = this.wolfHeadMain.rotateAngleZ;
         this.wolfMane.rotateAngleZ = dog.getShakeAngle(partialTickTime, -0.08F);
         this.wolfBody.rotateAngleZ = dog.getShakeAngle(partialTickTime, -0.16F);
         this.wolfBodyChest.rotateAngleZ = dog.getShakeAngle(partialTickTime, -0.16F);
@@ -197,6 +196,8 @@ public class ModelDog extends ModelBase {
         super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
         this.wolfHeadMain.rotateAngleX = headPitch * 0.017453292F;
         this.wolfHeadMain.rotateAngleY = netHeadYaw * 0.017453292F;
+        this.wolfHeadMainBone.rotateAngleX = this.wolfHeadMain.rotateAngleX;
+        this.wolfHeadMainBone.rotateAngleY = this.wolfHeadMain.rotateAngleY;
         this.wolfTail.rotateAngleX = ageInTicks;
     }
 }
