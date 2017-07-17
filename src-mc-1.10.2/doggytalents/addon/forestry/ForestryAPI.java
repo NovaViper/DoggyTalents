@@ -1,6 +1,5 @@
 package doggytalents.addon.forestry;
 
-import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.Loader;
 
 /**
@@ -12,9 +11,5 @@ public class ForestryAPI {
 		if(!Loader.isModLoaded(modId))
 			return;
 		
-	}
-	
-	public Block getBlockFromName(String name) {
-		return Block.getBlockFromName(name);
 	}
 }

@@ -1,8 +1,5 @@
 package doggytalents.client.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import doggytalents.handler.ConfigurationHandler;
 import doggytalents.lib.Reference;
 import net.minecraft.client.gui.GuiScreen;
@@ -13,6 +10,9 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by NovaViper on 4/4/2017.
@@ -52,7 +52,7 @@ public class ModGuiConfig extends GuiConfig {
 			list.addAll((new ConfigElement(ConfigurationHandler.config.getCategory(ConfigurationHandler.CATEGORY_DOGGYSETTINGS))).getChildElements());
 			return new GuiConfig(this.owningScreen, list, this.owningScreen.modID, ConfigurationHandler.CATEGORY_DOGGYSETTINGS, this.configElement.requiresWorldRestart() ||
 					this.owningScreen.allRequireWorldRestart, this.configElement.requiresMcRestart() ||
-					this.owningScreen.allRequireMcRestart, I18n.format("modgui.config.doggysettings"), I18n.format("modgui.config.doggysettings.tooltip"));
+					this.owningScreen.allRequireMcRestart, I18n.format("modgui.config.doggysettings"), I18n.format("modgui.config.doggysettings.toolip"));
 		}
 	}
 
@@ -70,7 +70,7 @@ public class ModGuiConfig extends GuiConfig {
 			list.addAll((new ConfigElement(ConfigurationHandler.config.getCategory(ConfigurationHandler.CATEGORY_DT_GENERAL))).getChildElements());
 			return new GuiConfig(this.owningScreen, list, this.owningScreen.modID, ConfigurationHandler.CATEGORY_DT_GENERAL, this.configElement.requiresWorldRestart() ||
 					this.owningScreen.allRequireWorldRestart, this.configElement.requiresMcRestart() ||
-					this.owningScreen.allRequireMcRestart, I18n.format("modgui.config.general"), I18n.format("modgui.config.general.tooltip"));
+					this.owningScreen.allRequireMcRestart, I18n.format("modgui.config.general"), I18n.format("modgui.config.general.toolip"));
 		}
 	}
 	

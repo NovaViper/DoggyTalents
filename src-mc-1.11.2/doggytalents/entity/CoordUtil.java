@@ -29,7 +29,7 @@ public class CoordUtil {
 	}
 	
 	public BlockPos getBowlPos() {
-		return this.dog.getDataManager().get(EntityDog.BOWL_POS).or(dog.getPosition());
+		return this.dog.getDataManager().get(EntityDog.BOWL_POS).get();
 	}
 
 	public void resetBedPosition() {

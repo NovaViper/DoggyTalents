@@ -1,8 +1,6 @@
 package doggytalents.handler;
-
 import doggytalents.client.renderer.block.DogBedModel;
 import doggytalents.helper.LogHelper;
-import doggytalents.lib.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -17,15 +15,15 @@ import net.minecraftforge.client.model.IRetexturableModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
-@EventBusSubscriber(value = Side.CLIENT)
+/**
+ * @author ProPercivalalb
+ */
 public class ClientHandler {
 
 	@SubscribeEvent
-	public static void onModelBakeEvent(ModelBakeEvent event) {
+	public void onModelBakeEvent(ModelBakeEvent event) {
 	    IModel baseModel;
 	    
 	    try {
@@ -56,4 +54,9 @@ public class ClientHandler {
      
 
 	}
+	
+	@SubscribeEvent
+    public void onChange(OnConfigChangedEvent event) {
+    	FMLLog.info("Change " + event.getModID() + " " + event.getConfigID());
+    }
 }
