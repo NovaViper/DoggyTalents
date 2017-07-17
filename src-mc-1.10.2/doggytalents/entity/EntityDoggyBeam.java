@@ -41,8 +41,10 @@ public class EntityDoggyBeam extends EntityThrowable {
     //}
     
     @Override
-    protected void onImpact(RayTraceResult result) {
-        if(result.entityHit instanceof EntityLivingBase) {
+    protected void onImpact(RayTraceResult result)
+    {
+        if (result.entityHit != null)
+        {
         	 byte var2 = 0;
              
              List nearEnts = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(100D, 10D, 100D));

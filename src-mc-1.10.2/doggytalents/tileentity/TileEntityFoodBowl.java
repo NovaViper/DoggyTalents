@@ -27,7 +27,6 @@ public class TileEntityFoodBowl extends TileEntity implements ITickable, IInvent
 	private final int iDogFoodBowlInventorySize = 5;
     private final int iDogFoodBowlStackSizeLimit = 64;
     private ItemStack[] bowlContents;
-    public int timeoutCounter;
 
     public TileEntityFoodBowl() {
         this.bowlContents = new ItemStack[5];
@@ -69,21 +68,16 @@ public class TileEntityFoodBowl extends TileEntity implements ITickable, IInvent
 
     @Override
     public void update() {
-    	
-    	//Only run update code every 5 ticks (0.25s)
-    	if(++this.timeoutCounter < 5) { return; }
-    	
-    	List<EntityDog> dogList = this.worldObj.getEntitiesWithinAABB(EntityDog.class, new AxisAlignedBB(this.pos.getX(), this.pos.getY() + 0.5D, this.pos.getZ(), this.pos.getX() + 1.0D, this.pos.getY() + 0.5D + 0.05000000074505806D, this.pos.getZ() + 1.0D).expand(5, 5, 5));
+    	List dogList = this.worldObj.getEntitiesWithinAABB(EntityDog.class, new AxisAlignedBB(this.pos.getX(), this.pos.getY() + 0.5D, this.pos.getZ(), this.pos.getX() + 1.0D, this.pos.getY() + 0.5D + 0.05000000074505806D, this.pos.getZ() + 1.0D).expand(5, 5, 5));
 
-    	for(EntityDog dog : dogList) {
-    		dog.coords.setBowlPos(this.pos);
-            	
-         	if(dog.getDogHunger() < 60 && this.getFirstDogFoodStack(dog) >= 0) {
-                this.feedDog(dog, this.getFirstDogFoodStack(dog), 1);
-         	}
+        if (dogList != null && dogList.size() > 0) {
+            for (int j1 = 0; j1 < dogList.size(); j1++) {
+            	EntityDog dog = (EntityDog)dogList.get(j1);
+
+                if (dog.getDogHunger() < 60 && this.getFirstDogFoodStack(dog) >= 0)
+                    this.feedDog(dog, this.getFirstDogFoodStack(dog), 1);
+            }
         }
-    	
-    	this.timeoutCounter = 0;
     }
 
     @Override

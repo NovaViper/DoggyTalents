@@ -1,9 +1,13 @@
 package doggytalents.client.renderer.entity;
 
-import doggytalents.client.model.ModelDog;
+import org.lwjgl.opengl.GL11;
+
 import doggytalents.entity.EntityDog;
 import doggytalents.lib.ResourceReference;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -11,6 +15,9 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -21,11 +28,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderDog extends RenderLiving<EntityDog> {
 	
-    public RenderDog(RenderManager renderManagerIn) {
-        super(renderManagerIn, new ModelDog(), 0.5F);
+    public RenderDog(RenderManager renderManager, ModelBase model, float shadowSize) {
+        super(renderManager, model, shadowSize);
         this.addLayer(new LayerRadioCollar(this));
         this.addLayer(new LayerDogHurt(this));
-        this.addLayer(new LayerBone(this));
     }
 
     @Override
@@ -64,6 +70,13 @@ public class RenderDog extends RenderLiving<EntityDog> {
     }
     
     @Override
+	public void renderName(EntityDog dog, double x, double y, double z) {
+        
+        if(!dog.getDogName().isEmpty())
+        	super.renderName(dog, x, y, z);
+    }
+    
+    @Override
     protected void renderEntityName(EntityDog dog, double x, double y, double z, String name, double distanceFromPlayer) {
 
     	y += (double)((float)this.getFontRendererFromRenderManager().FONT_HEIGHT * 1.15F * 0.016666668F * 0.7F);
@@ -88,10 +101,8 @@ public class RenderDog extends RenderLiving<EntityDog> {
 	    			EntityLivingBase owner = dog.getOwner();
 	    			if(owner != null)
 	    				this.renderLabelWithScale(this.getFontRendererFromRenderManager(), owner.getDisplayName().getUnformattedText(), (float)x, (float)y + f2 - 0.34F, (float)z, 0, f, f1, flag1, flag, 0.01F);
-	    			else if(dog.getOwnerId() != null)
-	          		   	this.renderLabelWithScale(this.getFontRendererFromRenderManager(), dog.getOwnerId().toString(), (float)x, (float)y + f2 - 0.34F, (float)z, 0, f, f1, flag1, flag, 0.01F);
 	    			else
-	    				this.renderLabelWithScale(this.getFontRendererFromRenderManager(), "A Wild Dog", (float)x, (float)y + f2 - 0.34F, (float)z, 0, f, f1, flag1, flag, 0.01F);
+	          		   	this.renderLabelWithScale(this.getFontRendererFromRenderManager(), dog.getOwnerId().toString(), (float)x, (float)y + f2 - 0.34F, (float)z, 0, f, f1, flag1, flag, 0.01F);
 	             }
     		}
     	}

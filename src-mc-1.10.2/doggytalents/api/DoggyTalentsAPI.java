@@ -1,8 +1,6 @@
 package doggytalents.api;
 
 import doggytalents.api.registry.ItemList;
-import doggytalents.creativetab.CreativeTabDogBed;
-import doggytalents.creativetab.CreativeTabDoggyTalents;
 import net.minecraft.creativetab.CreativeTabs;
 
 /**
@@ -10,8 +8,7 @@ import net.minecraft.creativetab.CreativeTabs;
  */
 public class DoggyTalentsAPI {
 	
-	public static CreativeTabs CREATIVE_TAB = new CreativeTabDoggyTalents();
-	public static CreativeTabs CREATIVE_TAB_BED = new CreativeTabDogBed();
+	public static CreativeTabs CREATIVE_TAB;
 	
 	public static ItemList PACKPUPPY_BLACKLIST = new ItemList();
 	
